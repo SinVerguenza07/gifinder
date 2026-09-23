@@ -1,30 +1,37 @@
-import type { Gif } from '../models/gif.interface';
-
+import type { Gif } from "../models/gif.interface";
+import { escapeHtml } from "../utils/html";
 function createGifCard(gif: Gif): string {
   const {
     id,
     title,
     url,
-    username = 'Autor no disponible',
-    description = 'Sin descripción',
-    tags,
+    altText = title,
+    username = "Autor no disponible",
     rating,
   } = gif;
-
   return `
-    <article class="gif-card">
-      <img src="${url}" alt="${title}" loading="lazy" />
-      <div class="gif-card__content">
-        <h2>${title}</h2>
-        <p>${username} - Clasificación ${rating.toUpperCase()}</p>
-        <p class="description">${description}</p>
-        <p class="tags">${tags.map((tag) => `#${tag}`).join(' ')}</p>
-        <button type="button" data-gif-id="${id}">Ver detalle</button>
-      </div>
-    </article>
-  `;
+<article class="gif-card">
+<img
+src="${url}"
+alt="${escapeHtml(altText)}"
+loading="lazy"
+/>
+<div class="gif-card__content">
+<h2>${escapeHtml(title)}</h2>
+<p>
+${escapeHtml(username)} - Clasificación
+${rating.toUpperCase()}
+</p>
+<button
+type="button"
+data-gif-id="${id}"
+>
+Ver detalle
+</button>
+</div>
+</article>
+`;
 }
-
 export function renderGallery(collection: Gif[], container: HTMLElement): void {
-  container.innerHTML = collection.map(createGifCard).join('');
+  container.innerHTML = collection.map(createGifCard).join("");
 }
